@@ -47,7 +47,7 @@ char **env_var = environ;
 
 while (1)
 {
-write(STDOUT_FILENO, "#cisfun$ ", 8);
+write(STDOUT_FILENO, "#cisfun$ ", 9);
 
 /* Allocate memory for the command */
 command = (char *)malloc(MAX_COMMAND_LENGTH);
@@ -105,7 +105,7 @@ handle_external_command(arguments);
 /* Command not found */
 else
 {
-write(STDERR_FILENO, "Command not found\n", 18);
+write(STDERR_FILENO, "No such file or directory\n", 18);
 }
 
 /* Free the allocated memory for the command */

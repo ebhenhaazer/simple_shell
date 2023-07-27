@@ -1,0 +1,23 @@
+#include "main.h"
+
+/**
+ * _print_environment - Print environment variables
+ *
+ * This function prints the environment variables
+ * using the global variable 'environ'.
+ *
+ * Return: Always 0 (Success)
+ */
+
+int _print_environment(void)
+{
+    unsigned int env_index = 0;
+
+    while (__environ[env_index])
+    {
+        printf("%s\n", __environ[env_index]);
+        env_index++;
+    }
+
+    return 0;
+}

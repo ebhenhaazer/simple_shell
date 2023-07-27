@@ -19,7 +19,11 @@ struct bltn_cmd
 int digits(size_t num);
 int set_env(const char *name, const char *value, int overwrite);
 void reverse_string(char *s);
+<<<<<<< HEAD
 int fork_process(char *command, char **tokens);
+=======
+int _fork_process(char *command, char **tokens);
+>>>>>>> cfcb1b117f3373982378b6bc97726e6b7505a784
 char *_which(char *filename);
 void display_prompt(void);
 char *get_env(const char *name);

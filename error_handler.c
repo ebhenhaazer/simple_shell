@@ -11,12 +11,12 @@
 int error_not_found(char **arvs, char **array_of_tokens, size_t command_num)
 {
 char *error_str;
-char *command_num_str = itoa(command_num);
+char *command_num_str = integer_to_string(command_num);
 int size = (strlen(arvs[0]) + (2 * strlen(": ")) +
-digit_counter(command_num) + strlen(array_of_tokens[0]) +
+digits(command_num) + strlen(array_of_tokens[0]) +
 strlen(": not found\n") + 1);
 
-malloc_str(&error_str, size, "error_not_found Error: malloc error");
+allocate_memory_for_char(&error_str, size, "error_not_found Error: malloc error");
 strcpy(error_str, arvs[0]);
 strcat(error_str, ": ");
 strcat(error_str, command_num_str);

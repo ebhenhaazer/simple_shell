@@ -16,10 +16,10 @@
 */
 void create_envar(char **env_var, unsigned int envar_length, const char *name, const char *value)
 {
-*env_var = malloc_str(env_var, envar_length,
+*env_var = allocate_memory_for_char(env_var, envar_length,
 "_setenv() Error: env_var malloc failed");
 envar_length = strlen(name) + strlen(value) + 2;
-*env_var = malloc_char(env_var, envar_length,
+*env_var = allocate_memory_for_char(env_var, envar_length,
 "_setenv() Error: env_var malloc failed");
 strcpy(*env_var, name);
 strcat(*env_var, "=");
@@ -66,43 +66,43 @@ return (0);
 }
 
 /**
-* env_does_not_exists - Create a new environment with the given variable.
+* handle_command_not_found - Create a new environment with the given variable.
 *
 * Description: This function creates a new environment by adding the
 *              provided environment variable to it.
 *
-* @env_var: New environment variable string to be added.
-* @envar_length: Length of the 'env_var' buffer.
-* @env_length: Length of the current environment.
+* @argv: New environment variable string to be added.
+* @tokens: Length of the 'env_var' buffer.
+* @command_num: Length of the current environment.
 *
 * Return: 0 on success, -1 on failure.
 */
-int env_does_not_exists(char *env_var, unsigned int envar_length, unsigned int env_length)
+int handle_command_not_found(char **argv, char **tokens, size_t command_num)
 {
 unsigned int free_new_env_index;
 char **new_environ;
 
-new_environ = (char **) malloc(sizeof(char *) * (env_length + 2));
+new_environ = (char **) malloc(sizeof(char *) * (command_num + 2));
 if (new_environ == NULL)
 {
 perror("_setenv() Error: new_environ malloc failed");
-free(env_var);
+free(argv);
 return (-1);
 }
-copy_array(new_environ, __environ);
-new_environ[env_length] = malloc(sizeof(char) * envar_length);
-if (new_environ[env_length] == NULL)
+copy_tokens(new_environ, __environ);
+new_environ[command_num] = malloc(sizeof(char) * tokens);
+if (new_environ[command_num] == NULL)
 {
 perror("_setenv() Error: new_environ[env_index] malloc failed");
-for (free_new_env_index = 0; free_new_env_index < env_length;
+for (free_new_env_index = 0; free_new_env_index < command_num;
 free_new_env_index++)
 free(new_environ[free_new_env_index]);
 free(new_environ);
 free(env_var);
 return (-1);
 }
-strcpy(new_environ[env_length], env_var);
-new_environ[env_length + 1] = NULL;
+strcpy(new_environ[command_num], env_var);
+new_environ[command_num + 1] = NULL;
 free(env_var);
 __environ = new_environ;
 return (0);
@@ -134,9 +134,9 @@ char *env_var;
 envar_length = strlen(name) + strlen(value) + 2;
 create_envar(&env_var, envar_length, name, value);
 _env_set_exists(env_var, envar_length, name, overwrite);
-if (env_name_exists(name) != -1)
+if (env_variable_exists(name) != -1)
 _env_set_exists(env_var, envar_length, name, overwrite);
 else
-env_does_not_exists(env_var, envar_length, env_length());
+handle_command_not_found(env_var, envar_length, _env_length());
 return (0);
 }

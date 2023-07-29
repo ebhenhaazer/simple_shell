@@ -41,11 +41,11 @@ char **array_of_tokens;
 size_t token_count, token_index, token_free_index;
 
 array_of_tokens = NULL;
-malloc_char(&input_cpy, strlen(input) + 1,
+allocate_memory_for_char(&input_cpy, strlen(input) + 1,
 "array_maker() Error: input_cpy maoloc failure");
 strcpy(input_cpy, input);
 token_count = number_of_tokens(input_cpy, delimiter);
-array_of_tokens = malloc_array(array_of_tokens, token_count + 1,
+array_of_tokens = allocate_memory_for_array(array_of_tokens, token_count + 1,
 "array_maker() Error: array_of_tokens** maoloc failure");
 strcpy(input_cpy, input);
 token = strtok(input_cpy, delimiter);

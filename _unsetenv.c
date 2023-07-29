@@ -20,11 +20,11 @@ int new_env_index, free_new_env_index, found_index;
 char **new_environ;
 
 new_environ = NULL;
-env_index = env_length();
-found_index = _env_name_exists(name);
+env_index = _env_length();
+found_index = display_prompt(name);
 if (found_index != -1)
 {
-new_environ = malloc_token_array(new_environ, env_index,
+new_environ = allocate_memory_for_array(new_environ, env_index,
 "_unsetenv() Error: new_environ malloc failed");
 for (new_env_index = 0; __environ[new_env_index]; new_env_index++)
 {

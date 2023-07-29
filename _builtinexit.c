@@ -15,7 +15,7 @@ int _exit_builtin(char **tokens)
 	{
 		int exit_code = atoi(exit_argument);
 
-		exit(exit_code);
+ 		exit(exit_code);
 	}
 	else
 	{

@@ -29,8 +29,8 @@ int _fork_process(char *command, char **tokens)
 	if (child_pid == 0)
 	{
 		/* Child process */
-		execve_error = execve(command, tokens, __environ);
-		if (execve_error == -1)
+		execve_err = execve(command, tokens, __environ);
+		if (execve_err == -1)
 		{
 			perror("execve: ");
 			return (-1);

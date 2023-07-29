@@ -1,61 +1,44 @@
-#include "main.h"
+#include "shell.h"
 
 /**
-* main - Entry point for the shell program
-*
-* Description: This function serves as the main loop for the shell program.
-*              It reads user input, tokenizes it, and executes commands.
-*
-* @argc: The number of command-line arguments (unused)
-* @argv: Array of command-line arguments (unused)
-* @envp: Array of environment variables (unused)
-*
-* Return: Always returns 0
-*/
-int main(__attribute__((unused)) int argc,
-__attribute__((unused)) char **argv,
-__attribute__((unused)) char **envp)
+ * main - entry point
+ * @ac: arg count
+ * @av: arg vector
+ *
+ * Return: 0 on success, 1 on error
+ */
+int main(int ac, char **av)
 {
-	int status = 0;
-	char *user_input, *delimiter, *command_path;
-	size_t input_buffer_size, command_count;
-	char **tokenized_commands;
-	
-	signal(SIGINT, hand_sig); /* Set up signal handler for SIGINT (Ctrl+C) */
-	
-	user_input = NULL;
-	input_buffer_size = command_count = 0;
-	delimiter = " \n";
-	
-	do
+	info_t info[] = { INFO_INIT };
+	int fd = 2;
+
+	asm ("mov %1, %0\n\t"
+		"add $3, %0"
+		: "=r" (fd)
+		: "r" (fd));
+
+	if (ac == 2)
 	{
-		command_count++;
-		_get_input_line(&user_input, &input_buffer_size, status); /* Read user input */
-		tokenized_commands = create_array_from_input(user_input, delimiter); /* Tokenize the input string */
-		
-		if (*tokenized_commands) /* Check if the first token is not NULL (non-empty input) */
+		fd = open(av[1], O_RDONLY);
+		if (fd == -1)
 		{
-			if (is_builtin_command(tokenized_commands)) /* Check if the command is a built-in command */
+			if (errno == EACCES)
+				exit(126);
+			if (errno == ENOENT)
 			{
-				if (handle_builtin_command(tokenized_commands) == DEFAULT_EXIT_CODE) /* Execute built-in command */
-				{
-					free_tokens(tokenized_commands, user_input);
-					exit(status);
-				}
+				_eputs(av[0]);
+				_eputs(": 0: Can't open ");
+				_eputs(av[1]);
+				_eputchar('\n');
+				_eputchar(BUF_FLUSH);
+				exit(127);
 			}
-			else
-			{
-				command_path = _which(tokenized_commands[0]); /* Check if the command exists in the system */
-				if (command_path != NULL)
-					status = _fork_process(command_path, tokenized_commands); /* Fork a child process to execute the command */
-				else
-					status = handle_command_not_found(argv, tokenized_commands, command_count); /* Command not found */
-			}
+			return (EXIT_FAILURE);
 		}
-		
-		free_tokens(tokenized_commands, user_input); /* Free allocated memory and reset variables */
-		user_input = NULL;
+		info->readfd = fd;
 	}
-	while (1);
-	return (0);
+	populate_env_list(info);
+	read_history(info);
+	hsh(info, av);
+	return (EXIT_SUCCESS);
 }
